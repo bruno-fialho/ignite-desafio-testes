@@ -8,6 +8,7 @@ import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDT
 import { CreateStatementUseCase } from "../createStatement/CreateStatementUseCase";
 import { OperationType } from "../createStatement/CreateStatementController";
 import { GetStatementOperationUseCase } from "./GetStatementOperationUseCase";
+import { GetStatementOperationError } from "./GetStatementOperationError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
@@ -60,29 +61,31 @@ describe("Get Statement", () => {
     expect(getStatement.amount).toEqual(100);
   });
 
-  it("should not be able to get a statement with invalid statement id", () => {
-    expect(async () => {
-      const user: ICreateUserDTO = {
-        email: "user@test.com",
-        name: "Name Test",
-        password: "1234",
-      };
+  it("should not be able to get a statement with invalid statement id", async () => {
+    const user: ICreateUserDTO = {
+      email: "user@test.com",
+      name: "Name Test",
+      password: "1234",
+    };
 
-      const createdUser = await createUserUseCase.execute(user);
+    const createdUser = await createUserUseCase.execute(user);
 
-      const userId = createdUser.id as string;
+    const userId = createdUser.id as string;
 
-      await getStatementOperationUseCase.execute({
+    await expect(
+      getStatementOperationUseCase.execute({
         user_id: userId,
         statement_id: "NonExistentStatement",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new GetStatementOperationError.StatementNotFound());
   });
 
   it("should not be able to get a statement if user does not exists", async () => {
-    await expect(getStatementOperationUseCase.execute({
+    await expect(
+      getStatementOperationUseCase.execute({
         user_id: "NonExistentUser",
         statement_id: "NonExistentStatement",
-    })).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new GetStatementOperationError.UserNotFound());
   });
 })

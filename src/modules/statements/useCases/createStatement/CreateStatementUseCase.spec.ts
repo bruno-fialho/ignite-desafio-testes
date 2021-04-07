@@ -7,6 +7,7 @@ import { CreateStatementUseCase } from "./CreateStatementUseCase";
 
 import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
 import { OperationType } from "./CreateStatementController";
+import { CreateStatementError } from "./CreateStatementError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
@@ -47,12 +48,14 @@ describe("Create Statement", () => {
   });
 
   it("should not be able to create a deposit if user does not exists", async () => {
-    await expect(createStatementUseCase.execute({
-      user_id: "NonExistentUser",
-      type: "deposit" as OperationType,
-      amount: 100.00,
-      description: "Test Deposit",
-    })).rejects.toBeInstanceOf(AppError);
+    await expect(
+      createStatementUseCase.execute({
+        user_id: "NonExistentUser",
+        type: "deposit" as OperationType,
+        amount: 100.00,
+        description: "Test Deposit",
+      })
+    ).rejects.toEqual(new CreateStatementError.UserNotFound());
   });
 
   it("should be able to create a withdraw", async () => {
@@ -83,45 +86,24 @@ describe("Create Statement", () => {
     expect(withdraw).toHaveProperty("id");
   });
 
-  it("should not be able to create a withdraw without funds", () => {
-    expect(async () => {
-      const user: ICreateUserDTO = {
-        email: "user@test.com",
-        name: "Name Test",
-        password: "1234",
-      };
+  it("should not be able to create a withdraw without funds", async () => {
+    const user: ICreateUserDTO = {
+      email: "user@test.com",
+      name: "Name Test",
+      password: "1234",
+    };
 
-      const createdUser = await createUserUseCase.execute(user);
+    const createdUser = await createUserUseCase.execute(user);
 
-      const userId = createdUser.id as string;
+    const userId = createdUser.id as string;
 
-      await createStatementUseCase.execute({
+    await expect(
+      createStatementUseCase.execute({
         user_id: userId,
         type: "withdraw" as OperationType,
-        amount: 100.00,
+        amount: 100,
         description: "Test Withdraw",
-      });
-    }).rejects.toBeInstanceOf(AppError);
-  });
-
-  it("should not be able to create a withdraw without funds", () => {
-    expect(async () => {
-      const user: ICreateUserDTO = {
-        email: "user@test.com",
-        name: "Name Test",
-        password: "1234",
-      };
-
-      const createdUser = await createUserUseCase.execute(user);
-
-      const userId = createdUser.id as string;
-
-      await createStatementUseCase.execute({
-        user_id: userId,
-        type: "withdraw" as OperationType,
-        amount: 100.00,
-        description: "Test Withdraw",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new CreateStatementError.InsufficientFunds());
   });
 })

@@ -8,6 +8,7 @@ import { GetBalanceUseCase } from "./GetBalanceUseCase";
 
 import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
 import { OperationType } from "../createStatement/CreateStatementController";
+import { GetBalanceError } from "./GetBalanceError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
@@ -64,8 +65,10 @@ describe("Get Balance", () => {
   });
 
   it("should not be able to get a balance if user does not exists", async () => {
-    await expect(getBalanceUseCase.execute({
-      user_id: "NonExistentUser",
-    })).rejects.toBeInstanceOf(AppError);
+    await expect(
+      getBalanceUseCase.execute({
+        user_id: "NonExistentUser",
+      })
+    ).rejects.toEqual(new GetBalanceError());
   });
 })

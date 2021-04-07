@@ -5,12 +5,13 @@ import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { ShowUserProfileUseCase } from "./ShowUserProfileUseCase";
 
 import { ICreateUserDTO } from "../createUser/ICreateUserDTO";
+import { ShowUserProfileError } from "./ShowUserProfileError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let createUserUseCase: CreateUserUseCase;
 let showUserProfileUseCase: ShowUserProfileUseCase;
 
-describe("Show Profile", () => {
+describe("Show User Profile", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     createUserUseCase = new CreateUserUseCase(inMemoryUsersRepository);
@@ -33,11 +34,11 @@ describe("Show Profile", () => {
     expect(userProfile).toHaveProperty("id");
   });
 
-  it("should not be able to show user profile if user does not exists", () => {
-    expect(async () => {
-      const userId = "NonExistentUser";
+  it("should not be able to show user profile if user does not exists", async () => {
+    const userId = "NonExistentUser";
 
-      await showUserProfileUseCase.execute(userId);
-    }).rejects.toBeInstanceOf(AppError);
+    expect(
+      showUserProfileUseCase.execute(userId)
+    ).rejects.toEqual(new ShowUserProfileError());
   });
 })
