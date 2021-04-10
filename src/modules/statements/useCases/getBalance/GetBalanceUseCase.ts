@@ -6,7 +6,7 @@ import { IStatementsRepository } from "../../repositories/IStatementsRepository"
 import { GetBalanceError } from "./GetBalanceError";
 
 interface IRequest {
-  user_id: string;
+  id: string;
 }
 
 interface IResponse {
@@ -24,15 +24,15 @@ export class GetBalanceUseCase {
     private usersRepository: IUsersRepository,
   ) {}
 
-  async execute({ user_id }: IRequest): Promise<IResponse> {
-    const user = await this.usersRepository.findById(user_id);
+  async execute({ id }: IRequest): Promise<IResponse> {
+    const user = await this.usersRepository.findById(id);
 
     if(!user) {
       throw new GetBalanceError();
     }
 
     const balance = await this.statementsRepository.getUserBalance({
-      user_id,
+      id,
       with_statement: true
     });
 
