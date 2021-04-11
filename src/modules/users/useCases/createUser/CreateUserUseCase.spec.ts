@@ -1,5 +1,3 @@
-import { AppError } from "../../../../shared/errors/AppError";
-
 import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
 import { CreateUserError } from "./CreateUserError";
 import { CreateUserUseCase } from "./CreateUserUseCase";

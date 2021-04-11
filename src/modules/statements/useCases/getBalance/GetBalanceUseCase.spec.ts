@@ -1,5 +1,3 @@
-import { AppError } from "../../../../shared/errors/AppError";
-
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
 import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository";
@@ -7,8 +5,8 @@ import { CreateStatementUseCase } from "../createStatement/CreateStatementUseCas
 import { GetBalanceUseCase } from "./GetBalanceUseCase";
 
 import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
-import { OperationType } from "../createStatement/CreateStatementController";
 import { GetBalanceError } from "./GetBalanceError";
+import { OperationType } from "../../entities/Statement";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
@@ -57,7 +55,7 @@ describe("Get Balance", () => {
     });
 
     const result = await getBalanceUseCase.execute({
-      user_id: userId,
+      id: userId,
     });
 
     expect(result).toHaveProperty("balance");
@@ -67,7 +65,7 @@ describe("Get Balance", () => {
   it("should not be able to get a balance if user does not exists", async () => {
     await expect(
       getBalanceUseCase.execute({
-        user_id: "NonExistentUser",
+        id: "NonExistentUser",
       })
     ).rejects.toEqual(new GetBalanceError());
   });

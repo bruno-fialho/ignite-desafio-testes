@@ -1,14 +1,12 @@
-import { AppError } from "../../../../shared/errors/AppError";
-
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
 import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository"
 
 import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
 import { CreateStatementUseCase } from "../createStatement/CreateStatementUseCase";
-import { OperationType } from "../createStatement/CreateStatementController";
 import { GetStatementOperationUseCase } from "./GetStatementOperationUseCase";
 import { GetStatementOperationError } from "./GetStatementOperationError";
+import { OperationType } from "../../entities/Statement";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;

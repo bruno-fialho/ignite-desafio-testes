@@ -34,8 +34,6 @@ export class CreateTransferUseCase {
     const { balance } = await this.statementsRepository.getUserBalance({ id });
 
     if (balance < amount) {
-      console.log('balance', balance);
-      console.log('amount', amount);
       throw new CreateTransferError.InsufficientFunds()
     }
 

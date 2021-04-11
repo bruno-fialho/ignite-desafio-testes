@@ -1,5 +1,6 @@
 import { Statement } from "../../entities/Statement";
 import { ICreateStatementDTO } from "../../useCases/createStatement/ICreateStatementDTO";
+import { ICreateTransferDTO } from "../../useCases/createTransfer/ICreateTransferDTO";
 import { IGetBalanceDTO } from "../../useCases/getBalance/IGetBalanceDTO";
 import { IGetStatementOperationDTO } from "../../useCases/getStatementOperation/IGetStatementOperationDTO";
 import { IStatementsRepository } from "../IStatementsRepository";
@@ -47,5 +48,15 @@ export class InMemoryStatementsRepository implements IStatementsRepository {
     }
 
     return { balance }
+  }
+
+  async createTransfer(data: ICreateTransferDTO): Promise<Statement> {
+    const transfer = new Statement();
+
+    Object.assign(transfer, data);
+
+    this.statements.push(transfer);
+
+    return transfer;
   }
 }

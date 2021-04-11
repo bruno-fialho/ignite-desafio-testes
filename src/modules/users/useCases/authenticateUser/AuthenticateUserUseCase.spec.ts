@@ -3,7 +3,6 @@ import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
 import { ICreateUserDTO } from "../createUser/ICreateUserDTO";
-import { AppError } from "../../../../shared/errors/AppError";
 import { IncorrectEmailOrPasswordError } from "./IncorrectEmailOrPasswordError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
